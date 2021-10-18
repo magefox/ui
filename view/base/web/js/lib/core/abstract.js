@@ -10,9 +10,5 @@ define([
 ], function (Vue) {
     'use strict';
 
-    return Vue.extend({
-        created() {
-            console.log('Core component');
-        }
-    });
+    return Vue.extend({});
 });

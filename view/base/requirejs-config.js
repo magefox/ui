@@ -9,7 +9,7 @@ var config = {
     map: {
         '*': {
             Vue: 'Magefox_Ui/js/vue',
-            muiComponent: 'Magefox_Ui/js/core/component'
+            muiComponent: 'Magefox_Ui/js/lib/core/abstract'
         }
     }
 };

@@ -7,13 +7,31 @@
 
 define([
     'jquery',
-    'muiComponent',
-    'uiRegistry',
+    'Vue',
     'underscore'
-], function ($, uiRegistry, _) {
+], function ($, Vue, _) {
     'use strict';
 
-    var layout = {};
+    var wrapper = undefined;
+
+    /**
+     * Check a node is DOM element
+     *
+     * @param node
+     * @returns {boolean}
+     */
+    function isElement(node) {
+        try {
+            //Using W3 DOM2 (works for FF, Opera and Chrome)
+            return node instanceof HTMLElement;
+        }
+        catch(e){
+            //Browsers not supporting W3 DOM2 don't have HTMLElement and
+            //an exception is thrown and we end up here. Testing some
+            //properties that all elements have (works on IE7)
+            return (typeof node==="object") && (node.nodeType===1) && (typeof node.style === "object") && (typeof node.ownerDocument ==="object");
+        }
+    }
 
     /**
      * Load node component file via requirejs.
@@ -38,40 +56,57 @@ define([
      */
     function loadDeps(node) {
         var loaded = $.Deferred();
-
-        uiRegistry.get(node.deps, function (deps) {
-            console.log(node);
-            loaded.resolve(node);
-        });
+        loaded.resolve(node);
 
         return loaded.promise();
     }
 
     function initComponent(node, Constr) {
-        var data = _.clone(node);
-        delete data.component;
-        node.data = data;
-        var component = new Constr(_.omit(node, 'children'));
+        var elems = [],
+            regex = new RegExp('(^|\\s)scope(|\\s):(|\\s)(\'|")' + node.target + '(\'|")');
 
-        uiRegistry.set(node.name, component);
-    }
+        delete node.component;
+        delete node.target;
 
-    function run(nodes, merge) {
-        if (_.isBoolean(merge) && !merge) {
-
+        if (wrapper !== undefined) {
+            elems.push(wrapper);
+        } else {
+            elems = $('[data-bind]').filter(function () {
+                return $(this).data('bind').match(regex);
+            });
         }
 
-        _.each(nodes || [], layout.iterator.bind(layout));
+        _.each(elems, function (el) {
+            var Component = Constr.extend({
+                el: el,
+                data: function () {
+                    return node;
+                }
+            });
+            var component = new Component();
 
-        // if (!node.component) {
-        //     return this;
-        // }
-        //
-        // loadDeps(node)
-        //     .then(loadSource)
-        //     .done(initComponent);
-        //
-        // return this;
+            console.log(component);
+        });
+    }
+
+    function run(nodes, container) {
+        if (isElement(container)) {
+            wrapper = container;
+        }
+
+        _.each(nodes || [], function (node, target) {
+            if (!node.component) {
+                return this;
+            }
+
+            node.target = target;
+
+            loadDeps(node)
+                .then(loadSource)
+                .done(initComponent);
+        });
+
+        return this;
     }
 
     return run;

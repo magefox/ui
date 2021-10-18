@@ -11,8 +11,18 @@ define([
     'use strict';
 
     return Component.extend({
+        data: function () {
+            return {
+                'title1': 'Test title 2'
+            };
+        },
         created() {
             console.log('Child component');
+        },
+        computed: {
+            'titleComputed': function () {
+                return this.title + ' computed';
+            }
         }
     });
 });
