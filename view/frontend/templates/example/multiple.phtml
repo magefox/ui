@@ -1,0 +1,46 @@
+<?php
+/******************************************************
+ * @package Magento 2 Ui
+ * @author https://magefox.com
+ * @copyright (C) 2021 - Magefox.Com
+ * @license MIT
+ *******************************************************/
+/**
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+$script = <<<HTML
+{
+    "*": {
+        "Magefox_Ui/js/core/app": {
+            "components": {
+                "mui-miltiple-scope1": {
+                    "component": "Magefox_Ui/js/view/example-component",
+                    "title": "Scope 1"
+                },
+                "mui-miltiple-scope2": {
+                    "component": "Magefox_Ui/js/view/example-component",
+                    "title": "Scope 2"
+                }
+            }
+        }
+    }
+}
+HTML;
+?>
+<pre><?= $script?></pre>
+<div class="mui-example">
+    <div data-bind="scope: 'mui-miltiple-scope1'">
+        {{title}}
+    </div>
+    <div data-bind="scope: 'mui-miltiple-scope1'">
+        {{title}}
+    </div>
+    <div data-bind="scope: 'mui-miltiple-scope2'">
+        {{title}}
+    </div>
+</div>
+<script type="text/x-magento-init">
+    <?= $script?>
+</script>

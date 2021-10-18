@@ -1,0 +1,15 @@
+<?php
+/******************************************************
+ * @package Magento 2 Ui
+ * @author https://magefox.com
+ * @copyright (C) 2021 - Magefox.Com
+ * @license MIT
+ *******************************************************/
+/**
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<ul>
+    <li><a href="<?= $escaper->escapeUrl($block->getUrl('mui/example/simple'))?>"><?= $escaper->escapeHtml(__('Simple'))?></a></li>
+</ul>

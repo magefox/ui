@@ -1,0 +1,29 @@
+<?php
+/******************************************************
+ * @package Magento 2 Ui
+ * @author https://magefox.com
+ * @copyright (C) 2021 - Magefox.Com
+ * @license MIT
+ *******************************************************/
+/**
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+$script = <<<HTML
+{
+    ".mui-example": {
+        "Magefox_Ui/js/core/app": {
+            "title": "Simple App"
+        }
+    }
+}
+HTML;
+?>
+<pre><?= $script?></pre>
+<div class="mui-example">
+    <h2>{{title}}</h2>
+</div>
+<script type="text/x-magento-init">
+    <?= $script?>
+</script>
