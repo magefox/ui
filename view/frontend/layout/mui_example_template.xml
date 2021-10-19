@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/******************************************************
+ * @package Magento 2 Ui
+ * @author https://magefox.com
+ * @copyright (C) 2021 - Magefox.Com
+ * @license MIT
+ *******************************************************/
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Magefox Ui Simple App</title>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="mui_example_template" template="Magefox_Ui::example/template.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

@@ -6,9 +6,13 @@
  *******************************************************/
 
 var config = {
+    paths: {
+        'mui/template': 'Magefox_Ui/template'
+    },
     map: {
         '*': {
             Vue: 'Magefox_Ui/js/vue',
+            muiUtils: 'Magefox_Ui/js/lib/utils',
             muiComponent: 'Magefox_Ui/js/lib/core/abstract'
         }
     }

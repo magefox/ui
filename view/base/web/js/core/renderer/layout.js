@@ -7,31 +7,13 @@
 
 define([
     'jquery',
-    'Vue',
+    'muiUtils',
     'underscore'
-], function ($, Vue, _) {
+], function ($, muiUtils, _) {
     'use strict';
 
-    var wrapper = undefined;
-
-    /**
-     * Check a node is DOM element
-     *
-     * @param node
-     * @returns {boolean}
-     */
-    function isElement(node) {
-        try {
-            //Using W3 DOM2 (works for FF, Opera and Chrome)
-            return node instanceof HTMLElement;
-        }
-        catch(e){
-            //Browsers not supporting W3 DOM2 don't have HTMLElement and
-            //an exception is thrown and we end up here. Testing some
-            //properties that all elements have (works on IE7)
-            return (typeof node==="object") && (node.nodeType===1) && (typeof node.style === "object") && (typeof node.ownerDocument ==="object");
-        }
-    }
+    var layout = {},
+        wrapper = undefined;
 
     /**
      * Load node component file via requirejs.
@@ -40,33 +22,30 @@ define([
      */
     function loadSource(node) {
         var loaded = $.Deferred(),
-            source = node.component;
+            source = node.component,
+            template = node.template
+        ;
 
-        require([source], function (constr) {
-            loaded.resolve(node, constr);
-        });
-
-        return loaded.promise();
-    }
-
-    /**
-     * Load node dependencies on other instances.
-     *
-     * @param {Object} node
-     */
-    function loadDeps(node) {
-        var loaded = $.Deferred();
-        loaded.resolve(node);
+        if (template === undefined) {
+            require([source], function (constr) {
+                loaded.resolve(node, constr);
+            });
+        } else {
+            require([source, 'text!' + template + '.html'], function (constr, template) {
+                loaded.resolve(node, constr, template);
+            });
+        }
 
         return loaded.promise();
     }
 
-    function initComponent(node, Constr) {
+    function initComponent(node, Constr, template) {
         var elems = [],
             regex = new RegExp('(^|\\s)scope(|\\s):(|\\s)(\'|")' + node.target + '(\'|")');
 
         delete node.component;
         delete node.target;
+        delete node.template;
 
         if (wrapper !== undefined) {
             elems.push(wrapper);
@@ -79,18 +58,17 @@ define([
         _.each(elems, function (el) {
             var Component = Constr.extend({
                 el: el,
+                template: template,
                 data: function () {
                     return node;
                 }
             });
             var component = new Component();
-
-            console.log(component);
         });
     }
 
     function run(nodes, container) {
-        if (isElement(container)) {
+        if (muiUtils.isDomElement(container)) {
             wrapper = container;
         }
 
@@ -101,8 +79,7 @@ define([
 
             node.target = target;
 
-            loadDeps(node)
-                .then(loadSource)
+            loadSource(node)
                 .done(initComponent);
         });
 
